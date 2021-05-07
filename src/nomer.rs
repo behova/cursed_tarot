@@ -53,9 +53,9 @@ pub fn convert_to_vectors(path: std::ffi::OsString) -> Vec<Vec<(String, String)>
             Err(e) => panic!("bad file conversion {:?}", e)
         };
 
-        let (i, output) = match self::convert_nom(&l) {
+        let (_, output) = match self::convert_nom(&l) {
             Ok(o) => o,
-            Err(e) => panic!("bad file conversion nom")
+            Err(e) => panic!("bad file conversion nom {:?}", e)
         };
 
         mvec.push(output); 

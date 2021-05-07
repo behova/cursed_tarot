@@ -107,6 +107,7 @@ dependencies = [
  "cursive",
  "fastrand",
  "nom",
+ "unicode-segmentation",
 ]
 
 [[package]]
