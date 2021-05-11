@@ -1,19 +1,18 @@
 //use std::fs::File;
+mod nomer;
+mod card;
 
 #[derive(Debug)]
 pub struct Deck {
     pub cards:Vec<std::ffi::OsString>,
 } 
 
-//add path to card files to call from main
 impl Deck {
     pub fn new() -> Self {
         Self {
             cards:Deck::get_cards(),
         }
-
     }
-
 }
 
 impl Deck {
@@ -39,13 +38,22 @@ impl Deck {
     }
 }
 
+
+//todo how to pass in card object to nom so that we only need one buffer??
 impl Deck {
-    pub fn draw_card(&mut self) -> std::ffi::OsString {
-        let card = match self.cards.pop() {
+    pub fn draw_card(&mut self) -> card::Card {
+        let card_path = match self.cards.pop() {
             Some(c) => c,
             None => panic!("couldn't draw card") 
         };
 
-        card    
+        let card_title = nomer::get_title(card_path.clone());
+
+        let img_data = nomer::convert_to_vectors(card_path);
+
+        let new_card = card::Card::new(card_title, img_data);
+
+        new_card
+
     }
 }

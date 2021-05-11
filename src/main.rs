@@ -1,10 +1,9 @@
 
-mod nomer;
 mod deck;
 //use colorsys::{Rgb, Hsl, ColorAlpha};
 use cursive::theme::{Color, ColorStyle};
 use cursive::view::Boxable;
-use cursive::views::Canvas;
+use cursive::views::{Canvas, Dialog};
 use cursive::Printer;
 use unicode_segmentation::UnicodeSegmentation;
 // use colorsys;
@@ -15,14 +14,14 @@ use unicode_segmentation::UnicodeSegmentation;
 
 fn main() {
 
-    let mut deck_test = deck::Deck::new();
-    let card = deck_test.draw_card();
-    let img = nomer::convert_to_vectors(card);
+    let mut new_deck = deck::Deck::new();
+    let card = new_deck.draw_card();
+    let img = card.img_data;
 
     let mut siv = cursive::default();
     siv.add_global_callback('q', |s| s.quit());
 
-    siv.add_layer(Canvas::new(()).with_draw(move |&(), printer| { draw(&(), printer, img.clone())}).fixed_size((80, 40)));
+    siv.add_layer(Dialog::around(Canvas::new(()).with_draw(move |&(), printer| { draw(&(), printer, img.clone())}).fixed_size((58, 40))).title(card.title));
     
 
     siv.run();
@@ -33,6 +32,7 @@ fn main() {
 pub fn draw(_: &(), p:&Printer, vecs: Vec<Vec<(String, String)>>) {
     
     let mut y:u8 = 0;
+    let amp = "amp";
 
     for line in vecs {
 
@@ -46,25 +46,34 @@ pub fn draw(_: &(), p:&Printer, vecs: Vec<Vec<(String, String)>>) {
             };
         
             let r = rgb.red() as u8;
-            let b = rgb.blue() as u8;
             let g = rgb.green() as u8;
-
-            //println!("{:?}, {:?}, {:?}", r, g, b);
+            let b = rgb.blue() as u8;
 
             let style = ColorStyle::new(
-                Color::Rgb(r,b,g), 
+                Color::Rgb(r, g, b), 
                 Color::Rgb(0, 0, 0),
             );
 
-            p.with_color(style, |printer| {
-                printer.print((x, y), &tag.1);
-            });
+            //conditional error checking for escape char.. 
+            //TODO implement a match check for '<' '>' '&' ..
 
-            //let increment = tag.1.as_str();
-            //let s = "pdopfdfs";
+            if tag.1.contains(amp) {
+                
+                p.with_color(style, |printer| {
+                    printer.print((x, y), "A");
+                });
 
-            x += tag.1.graphemes(true).count() as u8;
-            //x += 1;
+                x += 1;
+
+            } else {
+
+                p.with_color(style, |printer| {
+                    printer.print((x, y), &tag.1);
+                });
+
+                x += tag.1.graphemes(true).count() as u8;
+
+            }
                 
         }
         
