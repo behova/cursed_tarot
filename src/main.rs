@@ -19,9 +19,14 @@ fn main() {
     let img = card.img_data;
 
     let mut siv = cursive::default();
+
     siv.add_global_callback('q', |s| s.quit());
 
-    siv.add_layer(Dialog::around(Canvas::new(()).with_draw(move |&(), printer| { draw(&(), printer, img.clone())}).fixed_size((58, 40))).title(card.title));
+    siv.add_layer(Dialog::around(
+        Canvas::new(())
+        .with_draw(move |&(), printer| { draw(&(), printer, img.clone())})
+        .fixed_size((58, 40)))
+        .title(card.title));
     
 
     siv.run();
@@ -55,7 +60,7 @@ pub fn draw(_: &(), p:&Printer, vecs: Vec<Vec<(String, String)>>) {
             );
 
             //conditional error checking for escape char.. 
-            //TODO implement a match check for '<' '>' '&' ..
+            //TODO implement a match check for '<', '>', '&'
 
             if tag.1.contains(amp) {
                 

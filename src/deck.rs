@@ -47,9 +47,7 @@ impl Deck {
             None => panic!("couldn't draw card") 
         };
 
-        let card_title = nomer::get_title(card_path.clone());
-
-        let img_data = nomer::convert_to_vectors(card_path);
+        let (card_title, img_data) = nomer::convert_to_vectors(card_path);
 
         let new_card = card::Card::new(card_title, img_data);
 
